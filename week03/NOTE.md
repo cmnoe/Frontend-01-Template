@@ -7,113 +7,123 @@
 用树形结构以及符号的优先级来实现表达式
 
 1. Member（成员）
-  * a.b
+    * a.b
 
-  * a[b]
+    * a[b]
 
-  * foo`string`
+    * foo`string`
 
-  * super.b
+    * super.b
 
-  * super['b']
+    * super['b']
 
-  * new.target
+    * new.target
 
-  * new Foo()
+    * new Foo()
 
 2. New
 
-  * new Foo（特意提出来区分member和call使得表达式的结果符合直觉）
+    * new Foo（特意提出来区分member和call使得表达式的结果符合直觉）
 
 3. Call（调用）
 
-  * foo()
+    * foo()
 
-  * super()
+    * super()
 
-  * foo()['b']
+    * foo()['b']
 
-  * foo().b
+    * foo().b
 
-  * foo()`abc`
+    * foo()`abc`
 
 4. Left Handside & Right Handside（左右值）
 
 5. Update（提升）
 
-  * a++
+    * a++
 
-  * a--
+    * a--
 
-  * --a
+    * --a
 
-  * ++a
+    * ++a
 
 6. Unary
 
-  * delete a.b
+    * delete a.b
 
-  * void foo()
+    * void foo()
 
-  * typeof a
+    * typeof a
 
-  * +a
+    * +a
 
-  * -a
+    * -a
 
-  * ~a
+    * ~a
 
-  * !a
+    * !a
 
-  * await a
+    * await a
 
 7. Exponental（乘方）
 
-  * '**'
+    * '**'
 
 8. Multiplicative（乘）
 
-  * / * %
+    * / * %
 
 9. Additive（加）
 
-  * '+' '-'
+    * '+' '-'
 
 10. Shift（移位）
 
-  * << >> >>>
+    * << >> >>>
 
 11. Relationship（关系）
 
-  * < > <= >= instanceof in
+    * < > <= >= instanceof in
 
 12. Equality（比较）
 
-  * ==
+    * ==
 
-  * !=
+    * !=
 
-  * ===
+    * ===
 
-  * !==
+    * !==
 
 13. Bitwise（位运算）
 
-  * & ^ |
+    * & ^ |
 
 14. Logical（逻辑）
 
-  * &&
+    * &&
 
-  * ||
+    * ||
 
 15. Conditional（条件）
 
-  * ? :
+    * ? :
 
 ### Runtime
 
 #### Type Convertion
+
+|           | Number         | String           | Boolean        | Undefined | Null | Object | Symbol
+| --------- | ------         | ------           | -------        | --------- | ---- | ------ | ------
+| Number    | -              |                  | 0 false        | x         | x    | Boxing | x
+| String    |                | -                | "" false       | x         | x    | Boxing | x
+| Boolena   | true:1 false:0 | 'true' 'false'   | -              | x         | x    | Boxing | x
+| Undefined | 0              | 'Undefined'      | false          | -         | x    | x      | x
+| Null      | 0              | 'null'           | false          | x         | -    | x      | x
+| Object    | valueOf        | valueOf toString | true           | x         | x    | -      | x
+| Symbol    | x              | x                | x              | x         | x    | Boxing | -
 
 
 ## 语句、对象
@@ -124,60 +134,60 @@
 
 1. Completion Record
 
-  * [[type]]: mormal, break, continue, return, or throw
-  * [[value]]: Types
-  * [[target]]: label
+    * [[type]]: mormal, break, continue, return, or throw
+    * [[value]]: Types
+    * [[target]]: label
 2. Lexical Enviorment
 
 #### Grammar
 
 1. 简单语句
 
-  * ExpressionStatement （表达式语句，一般用于计算）
+    * ExpressionStatement （表达式语句，一般用于计算）
 
-  * EmptyStatement（空语句）
+    * EmptyStatement（空语句）
 
-  * DebuggerStatement（调试语句）
+    * DebuggerStatement（调试语句）
 
-  * ThrowStatement（抛错）
+    * ThrowStatement（抛错）
 
-  * ContinueStatement（控制语句，跳至循环下一层）
+    * ContinueStatement（控制语句，跳至循环下一层）
 
-  * BreakStatement（控制语句，跳出循环）
+    * BreakStatement（控制语句，跳出循环）
 
-  * ReturnStatement（返回语句）
+    * ReturnStatement（返回语句）
 
 2. 复合语句
 
-  * BlockStatement（块语句，提供作用域）
+    * BlockStatement（块语句，提供作用域）
 
-  * IfStatement（if分支语句）
+    * IfStatement（if分支语句）
 
-  * SwitchStatement（switch分支语句）
+    * SwitchStatement（switch分支语句）
 
-  * IterationStatement（迭代，即循环语句for、while）
+    * IterationStatement（迭代，即循环语句for、while）
 
-  * WithStatement（设置特定对象的作用域，不要用）
+    * WithStatement（设置特定对象的作用域，不要用）
 
-  * LeabelledStatement（标签语句，慎用）
+    * LeabelledStatement（标签语句，慎用）
 
-  * TryStatement（异常处理）
+    * TryStatement（异常处理）
 
 3. 声明
 
-  * FunctionDeclaration
+    * FunctionDeclaration
   
-  * GeneratorDeclaration
+    * GeneratorDeclaration
 
-  * AsyncFunctionDeclaration
+    * AsyncFunctionDeclaration
 
-  * AsyncGeneratorDeclaration
+    * AsyncGeneratorDeclaration
 
-  * VariableStatement
+    * VariableStatement
 
-  * ClassDeclaration
+    * ClassDeclaration
 
-  * LexicalDeclaration
+    * LexicalDeclaration
 
 4. 预处理
 
@@ -197,15 +207,15 @@
 
 1. Object-Class（类）
 
-  * 归类 -- 多继承
+    * 归类 -- 多继承
 
-  * 分类 -- 单继承
+    * 分类 -- 单继承
 
 2. Object-Prototype（原型）
 
-  用“相似”的方式描述，对象仅添加自身与原型的区别
+    * 用“相似”的方式描述，对象仅添加自身与原型的区别
 
-设计对象的状态和行为时，遵循“行为改变状态”原则
+    * 设计对象的状态和行为时，遵循“行为改变状态”原则
 
 #### Object in JavaScript
 
