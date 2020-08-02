@@ -83,4 +83,108 @@ let cancel = (point, context)=>{
 
 - 使用dispatchEvent函数派发新的CustomEvent事件
 
+## gesture应用于Carousel上
+
+### 派发start、pan、panend三个事件
+
+- start
+    - 暂停自动翻页的动画，销毁计时器
+    - 记录当前播放到的图片与标准位置的偏移量
+```
+            let onStart = _ => {
+                timeline.pause()
+                clearTimeout(nextPicStopHandler)
+
+                let currentElement = children[currentPosition]
+                let currentTransformValue = Number(currentElement.style.transform.match(/translateX\(([\s\S]+)px\)/)[1]) 
+                offset = currentTransformValue + 500 * currentPosition
+            }
+```
+
+- pan
+    - 计算拖拽距离，将当前图片以及其之前、之后三张图片移动到相应位置
+    - 为保证最多移动一张图片，设置偏移范围在-500px到500px之间
+```
+            let onPan = event => {
+				let dx = event.detail.clientX - event.detail.startX
+
+                let lastElement = children[lastPosition]
+                let currentElement = children[currentPosition]
+				let nextElement = children[nextPosition]
+				
+				let limitOffset = (offset + dx) < -500 ? -500 : (offset + dx) > 500 ? 500 : offset + dx
+
+                let lastTransformValue = -500 - 500 * lastPosition + limitOffset
+                let currentTransformValue = -500 * currentPosition + limitOffset
+                let nextTransformValue = 500 - 500 * nextPosition + limitOffset
+
+                lastElement.style.transform = `translateX(${lastTransformValue}px)`
+                currentElement.style.transform = `translateX(${currentTransformValue}px)`
+                nextElement.style.transform = `translateX(${nextTransformValue}px)`
+			}
+```
+
+- panend
+    - 根据最后的移动位置算出图片移动方向
+    - 重新播放动画，将前、中、后三张图片移动到正确的标准位置
+    - 更新当前图片索引，重新设置计时器恢复自动播放
+```
+			let onPanend = event => {
+				let direction = 0
+				let dx = event.detail.clientX - event.detail.startX
+
+				if (dx + offset > 250 || dx > 0 && event.detail.isFlick) {
+					direction = 1
+				} else if (dx + offset < -250 || dx < 0 && event.detail.isFlick) {
+					direction = -1
+				}
+				timeline.reset()
+				timeline.start()
+
+				let lastElement = children[lastPosition]
+                let currentElement = children[currentPosition]
+                let nextElement = children[nextPosition]
+
+				timeline.add(
+					new Animation(
+						lastElement.style,
+						"transform",
+						- 500 - 500 * lastPosition + offset + dx,
+						- 500 - 500 * lastPosition + direction * 500,
+						1000,
+						0,
+						ease,
+						(v) => `translateX(${v}px)`
+					)
+				);
+				timeline.add(
+					new Animation(
+						currentElement.style,
+						"transform",
+						-500 * currentPosition + offset + dx,
+						-500 * currentPosition + direction * 500,
+						1000,
+						0,
+						ease,
+						(v) => `translateX(${v}px)`
+					)
+				);
+				timeline.add(
+					new Animation(
+						nextElement.style,
+						"transform",
+						500 - 500 * nextPosition + offset + dx,
+						500 - 500 * nextPosition + direction * 500,
+						1000,
+						0,
+						ease,
+						(v) => `translateX(${v}px)`
+					)
+				);
+
+				position = (position - direction + data.length) % data.length
+
+				nextPicStopHandler = setTimeout(nextPic, 3000)
+			}
+```
 
